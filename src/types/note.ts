@@ -1,5 +1,5 @@
 export interface Note {
-  readonly id?: number;
+  readonly id?: string;
   title: string;
   content?: string;
   tag: NoteTag;

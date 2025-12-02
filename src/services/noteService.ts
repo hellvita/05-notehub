@@ -41,3 +41,8 @@ export const createNote = async (note: Note): Promise<Note> => {
   const { data } = await axios.post<Note>("/notes", note);
   return data;
 };
+
+export const deleteNote = async (id: string): Promise<Note> => {
+  const { data } = await axios.delete<Note>(`/notes/${id}`);
+  return data;
+};
