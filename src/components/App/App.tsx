@@ -1,18 +1,21 @@
 import { fetchNotes } from "../../services/noteService";
-// import { useState } from "react";
+import { useState } from "react";
 // import { fetchNotes, createNote, deleteNote } from "../../services/noteService";
-import css from "./App.module.css";
+import ReactPaginate from "react-paginate";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import NoteList from "../NoteList/NoteList";
+import css from "./App.module.css";
 
 export default function App() {
-  // const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { data } = useQuery({
-    queryKey: ["notes"],
-    queryFn: () => fetchNotes({ page: 6 }),
+  const { data, isSuccess } = useQuery({
+    queryKey: ["notes", currentPage],
+    queryFn: () => fetchNotes({ page: currentPage }),
     placeholderData: keepPreviousData,
   });
+
+  const totalPages = data?.totalPages ?? 0;
 
   const handle = async () => {
     try {
@@ -37,7 +40,18 @@ export default function App() {
     <div className={css.app}>
       <header className={css.toolbar}>
         {/* Компонент SearchBox */}
-        {/* Пагінація */}
+        {isSuccess && totalPages > 1 && (
+          <ReactPaginate
+            pageCount={totalPages}
+            pageRangeDisplayed={5}
+            marginPagesDisplayed={1}
+            onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+            containerClassName={css.pagination}
+            activeClassName={css.active}
+            nextLabel="→"
+            previousLabel="←"
+          />
+        )}
         {/* Кнопка створення нотатки */}
       </header>
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
