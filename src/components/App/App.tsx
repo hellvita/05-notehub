@@ -52,7 +52,7 @@ export default function App() {
             previousLabel="←"
           />
         )}
-        {/* Кнопка створення нотатки */}
+        <button className={css.button}>Create note +</button>
       </header>
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
     </div>
