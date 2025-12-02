@@ -22,7 +22,7 @@ interface NotesParams {
 export const fetchNotes = async ({
   search,
   page,
-  perPage,
+  perPage = 12,
   tag,
   sortBy,
 }: NotesParams): Promise<NotesHttpResponse> => {
