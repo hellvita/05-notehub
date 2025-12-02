@@ -36,3 +36,8 @@ export const fetchNotes = async ({
   const { data } = await axios.get<NotesHttpResponse>("/notes", { params });
   return data;
 };
+
+export const createNote = async (note: Note): Promise<Note> => {
+  const { data } = await axios.post<Note>("/notes", note);
+  return data;
+};

@@ -1,8 +1,8 @@
 export interface Note {
-  readonly id: number;
+  readonly id?: number;
   title: string;
   content?: string;
-  tag: string;
+  tag: NoteTag;
 }
 
 export type NoteTag = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
