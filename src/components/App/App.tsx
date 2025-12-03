@@ -68,8 +68,16 @@ export default function App() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => deleteNote(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] }),
+    onSuccess: (deletedNote) => {
+      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] });
+      toast(`The '${deletedNote.title}' note has been deleted!`);
+    },
+    onError: () =>
+      toast("Could not delete note, please try again...", {
+        style: {
+          borderColor: "#d32f2f",
+        },
+      }),
   });
   const handleDeleteNote = (id: string) => {
     deleteMutation.mutate(id);
