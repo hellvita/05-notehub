@@ -2,15 +2,9 @@ import { Formik, Form, Field, type FormikHelpers, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useId } from "react";
 import css from "./NoteForm.module.css";
-import type { NoteTag } from "../../types/note";
+import type { ModalProps, Note } from "../../types/note";
 
-interface NoteFormValues {
-  title: string;
-  content: string;
-  tag: NoteTag;
-}
-
-const initialValues: NoteFormValues = {
+const initialValues: Note = {
   title: "",
   content: "",
   tag: "Todo",
@@ -24,19 +18,12 @@ const NoteFormSchema = Yup.object().shape({
   content: Yup.string().max(500, "Content can include up to 500 symbols only"),
 });
 
-interface NoteFormProps {
-  onClose: () => void;
-}
-
-export default function NoteForm({ onClose }: NoteFormProps) {
+export default function NoteForm({ onClose, onAdd }: ModalProps) {
   const fieldId = useId();
 
   const handleCancel = () => onClose();
-  const handleSubmit = (
-    values: NoteFormValues,
-    actions: FormikHelpers<NoteFormValues>
-  ) => {
-    console.log(values);
+  const handleSubmit = (values: Note, actions: FormikHelpers<Note>) => {
+    onAdd(values);
     actions.resetForm();
     onClose();
   };

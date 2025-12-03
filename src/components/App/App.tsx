@@ -1,11 +1,16 @@
-import { fetchNotes } from "../../services/noteService";
+import { createNote, fetchNotes } from "../../services/noteService";
 import { useState } from "react";
-// import { fetchNotes, createNote, deleteNote } from "../../services/noteService";
 import ReactPaginate from "react-paginate";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import NoteList from "../NoteList/NoteList";
 import css from "./App.module.css";
 import Modal from "../Modal/Modal";
+import type { Note } from "../../types/note";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +26,18 @@ export default function App() {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (note: Note) => createNote(note),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] }),
+  });
+
+  const handleAddNote = (note: Note) => {
+    mutation.mutate(note);
+  };
 
   const handle = async () => {
     try {
@@ -63,7 +80,7 @@ export default function App() {
         </button>
       </header>
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
-      {isModalOpen && <Modal onClose={closeModal} />}
+      {isModalOpen && <Modal onClose={closeModal} onAdd={handleAddNote} />}
     </div>
   );
 }
