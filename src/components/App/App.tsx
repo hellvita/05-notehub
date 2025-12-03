@@ -5,9 +5,11 @@ import ReactPaginate from "react-paginate";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import NoteList from "../NoteList/NoteList";
 import css from "./App.module.css";
+import Modal from "../Modal/Modal";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isSuccess } = useQuery({
     queryKey: ["notes", currentPage],
@@ -16,6 +18,9 @@ export default function App() {
   });
 
   const totalPages = data?.totalPages ?? 0;
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const handle = async () => {
     try {
@@ -53,9 +58,12 @@ export default function App() {
             previousLabel="←"
           />
         )}
-        <button className={css.button}>Create note +</button>
+        <button className={css.button} onClick={openModal}>
+          Create note +
+        </button>
       </header>
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
+      {isModalOpen && <Modal onClose={closeModal} />}
     </div>
   );
 }
