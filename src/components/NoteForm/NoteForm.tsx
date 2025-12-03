@@ -1,4 +1,5 @@
-import { Formik, Form, Field, type FormikHelpers } from "formik";
+import { Formik, Form, Field, type FormikHelpers, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { useId } from "react";
 import css from "./NoteForm.module.css";
 import type { NoteTag } from "../../types/note";
@@ -14,6 +15,14 @@ const initialValues: NoteFormValues = {
   content: "",
   tag: "Todo",
 };
+
+const NoteFormSchema = Yup.object().shape({
+  title: Yup.string()
+    .min(3, "Title must include at least 3 symbols")
+    .max(50, "Title can include up to 50 symbols only")
+    .required("Title is required"),
+  content: Yup.string().max(500, "Content can include up to 500 symbols only"),
+});
 
 interface NoteFormProps {
   onClose: () => void;
@@ -33,7 +42,11 @@ export default function NoteForm({ onClose }: NoteFormProps) {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={NoteFormSchema}
+      onSubmit={handleSubmit}
+    >
       <Form className={css.form}>
         <div className={css.formGroup}>
           <label htmlFor={`${fieldId}-title`}>Title</label>
@@ -43,7 +56,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
             name="title"
             className={css.input}
           />
-          <span name="title" className={css.error} />
+          <ErrorMessage component="span" name="title" className={css.error} />
         </div>
 
         <div className={css.formGroup}>
@@ -55,7 +68,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
             rows={8}
             className={css.textarea}
           />
-          <span name="content" className={css.error} />
+          <ErrorMessage component="span" name="content" className={css.error} />
         </div>
 
         <div className={css.formGroup}>
@@ -72,7 +85,6 @@ export default function NoteForm({ onClose }: NoteFormProps) {
             <option value="Meeting">Meeting</option>
             <option value="Shopping">Shopping</option>
           </Field>
-          <span name="tag" className={css.error} />
         </div>
 
         <div className={css.actions}>
