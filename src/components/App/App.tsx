@@ -16,8 +16,14 @@ import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import NoResultMessage from "../NoResultMessage/NoResultMessage";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function App() {
+  // toast("i'm toast", {
+  //   style: {
+  //     borderColor: "#d32f2f",
+  //   },
+  // });
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -45,8 +51,16 @@ export default function App() {
 
   const createMutation = useMutation({
     mutationFn: async (note: Note) => createNote(note),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] }),
+    onSuccess: (newNote) => {
+      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] });
+      toast(`The '${newNote.title}' note has been added!`);
+    },
+    onError: () =>
+      toast("Could not save changes, please try again...", {
+        style: {
+          borderColor: "#d32f2f",
+        },
+      }),
   });
   const handleAddNote = (note: Note) => {
     createMutation.mutate(note);
@@ -65,6 +79,11 @@ export default function App() {
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox query={searchQuery} onSearch={handleSearch} />
+        <Toaster
+          toastOptions={{
+            className: `${css.toast}`,
+          }}
+        />
         {isSuccess && totalPages > 1 && (
           <ReactPaginate
             pageCount={totalPages}
