@@ -1,4 +1,4 @@
-import { createNote, fetchNotes } from "../../services/noteService";
+import { createNote, deleteNote, fetchNotes } from "../../services/noteService";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
 import {
@@ -29,34 +29,23 @@ export default function App() {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: async (note: Note) => createNote(note),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["notes", currentPage] }),
   });
-
   const handleAddNote = (note: Note) => {
-    mutation.mutate(note);
+    createMutation.mutate(note);
   };
 
-  const handle = async () => {
-    try {
-      // const { notes, totalPages } = await fetchNotes({ page: currentPage });
-      // console.log("totalPages: ", totalPages);
-      // console.log("notes: ", notes);
-      // console.log("note-1: ", notes[0]);
-      // const createdNote = await createNote({
-      //   title: "my custom note",
-      //   tag: "Personal",
-      // });
-      // console.log("createdNote: ", createdNote);
-      // const deletedNote = await deleteNote("cmiox7cwf1dzlyy8u5nel2tcn");
-      // console.log("deletedNote: ", deletedNote);
-    } catch (error) {
-      console.log(error);
-    }
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => deleteNote(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] }),
+  });
+  const handleDeleteNote = (id: string) => {
+    deleteMutation.mutate(id);
   };
-  handle();
 
   return (
     <div className={css.app}>
@@ -79,7 +68,9 @@ export default function App() {
           Create note +
         </button>
       </header>
-      {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
+      {data && data.notes.length > 0 && (
+        <NoteList notes={data.notes} onDelete={handleDeleteNote} />
+      )}
       {isModalOpen && <Modal onClose={closeModal} onAdd={handleAddNote} />}
     </div>
   );
