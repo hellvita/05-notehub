@@ -1,5 +1,6 @@
 import { createNote, deleteNote, fetchNotes } from "../../services/noteService";
 import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import ReactPaginate from "react-paginate";
 import {
   keepPreviousData,
@@ -11,18 +12,28 @@ import NoteList from "../NoteList/NoteList";
 import css from "./App.module.css";
 import Modal from "../Modal/Modal";
 import type { Note } from "../../types/note";
+import SearchBox from "../SearchBox/SearchBox";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { data, isSuccess } = useQuery({
-    queryKey: ["notes", currentPage],
-    queryFn: () => fetchNotes({ page: currentPage }),
+    queryKey: ["notes", currentPage, searchQuery],
+    queryFn: () =>
+      fetchNotes({
+        page: currentPage,
+        search: searchQuery !== "" ? searchQuery : undefined,
+      }),
     placeholderData: keepPreviousData,
   });
 
   const totalPages = data?.totalPages ?? 0;
+
+  const handleSearch = useDebouncedCallback((value: string) => {
+    setSearchQuery(value);
+  }, 1000);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -50,7 +61,7 @@ export default function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        {/* Компонент SearchBox */}
+        <SearchBox query={searchQuery} onSearch={handleSearch} />
         {isSuccess && totalPages > 1 && (
           <ReactPaginate
             pageCount={totalPages}
