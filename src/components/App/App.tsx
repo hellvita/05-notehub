@@ -14,13 +14,14 @@ import Modal from "../Modal/Modal";
 import type { Note } from "../../types/note";
 import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const { data, isSuccess, isLoading } = useQuery({
+  const { data, isSuccess, isLoading, isError } = useQuery({
     queryKey: ["notes", currentPage, searchQuery],
     queryFn: () =>
       fetchNotes({
@@ -81,6 +82,7 @@ export default function App() {
         </button>
       </header>
       {isLoading && <Loader />}
+      {isError && <ErrorMessage />}
       {data && data.notes.length > 0 && (
         <NoteList notes={data.notes} onDelete={handleDeleteNote} />
       )}
