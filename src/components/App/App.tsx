@@ -19,11 +19,6 @@ import NoResultMessage from "../NoResultMessage/NoResultMessage";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function App() {
-  // toast("i'm toast", {
-  //   style: {
-  //     borderColor: "#d32f2f",
-  //   },
-  // });
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
