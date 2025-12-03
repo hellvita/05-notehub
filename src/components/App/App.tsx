@@ -15,6 +15,7 @@ import type { Note } from "../../types/note";
 import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import NoResultMessage from "../NoResultMessage/NoResultMessage";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -83,6 +84,9 @@ export default function App() {
       </header>
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
+      {isSuccess && data.notes.length === 0 && searchQuery !== "" && (
+        <NoResultMessage invalidQuery={searchQuery} />
+      )}
       {data && data.notes.length > 0 && (
         <NoteList notes={data.notes} onDelete={handleDeleteNote} />
       )}
