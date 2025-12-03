@@ -1,7 +1,6 @@
 import { createNote, deleteNote, fetchNotes } from "../../services/noteService";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import ReactPaginate from "react-paginate";
 import {
   keepPreviousData,
   useQuery,
@@ -17,6 +16,7 @@ import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import NoResultMessage from "../NoResultMessage/NoResultMessage";
 import toast, { Toaster } from "react-hot-toast";
+import Pagination from "../Pagination/Pagination";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,16 +88,10 @@ export default function App() {
           }}
         />
         {isSuccess && totalPages > 1 && (
-          <ReactPaginate
-            pageCount={totalPages}
-            pageRangeDisplayed={5}
-            marginPagesDisplayed={1}
-            onPageChange={({ selected }) => setCurrentPage(selected + 1)}
-            forcePage={currentPage - 1}
-            containerClassName={css.pagination}
-            activeClassName={css.active}
-            nextLabel="→"
-            previousLabel="←"
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
           />
         )}
         <button className={css.button} onClick={openModal}>
