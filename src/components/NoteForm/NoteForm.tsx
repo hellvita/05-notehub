@@ -4,7 +4,7 @@ import { useId } from "react";
 import css from "./NoteForm.module.css";
 import type { NewNote } from "../../types/note";
 
-interface ModalProps {
+interface NoteFormProps {
   onClose: () => void;
   onAdd: (note: NewNote) => void;
 }
@@ -21,9 +21,10 @@ const NoteFormSchema = Yup.object().shape({
     .max(50, "Title can include up to 50 symbols only")
     .required("Title is required"),
   content: Yup.string().max(500, "Content can include up to 500 symbols only"),
+  tag: Yup.string().required("Tag is required"),
 });
 
-export default function NoteForm({ onClose, onAdd }: ModalProps) {
+export default function NoteForm({ onClose, onAdd }: NoteFormProps) {
   const fieldId = useId();
 
   const handleCancel = () => onClose();
