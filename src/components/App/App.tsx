@@ -1,12 +1,7 @@
-import { deleteNote, fetchNotes } from "../../services/noteService";
+import { fetchNotes } from "../../services/noteService";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import {
-  keepPreviousData,
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import NoteList from "../NoteList/NoteList";
 import css from "./App.module.css";
 import Modal from "../Modal/Modal";
@@ -14,7 +9,7 @@ import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import NoResultMessage from "../NoResultMessage/NoResultMessage";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import Pagination from "../Pagination/Pagination";
 
 export default function App() {
@@ -42,25 +37,6 @@ export default function App() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const queryClient = useQueryClient();
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => deleteNote(id),
-    onSuccess: (deletedNote) => {
-      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] });
-      toast(`The '${deletedNote.title}' note has been deleted!`);
-    },
-    onError: () =>
-      toast("Could not delete note, please try again...", {
-        style: {
-          borderColor: "#d32f2f",
-        },
-      }),
-  });
-  const handleDeleteNote = (id: string) => {
-    deleteMutation.mutate(id);
-  };
-
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
@@ -86,9 +62,7 @@ export default function App() {
       {isSuccess && data.notes.length === 0 && searchQuery !== "" && (
         <NoResultMessage invalidQuery={searchQuery} />
       )}
-      {data && data.notes.length > 0 && (
-        <NoteList notes={data.notes} onDelete={handleDeleteNote} />
-      )}
+      {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
       {isModalOpen && <Modal onClose={closeModal} />}
     </div>
   );
