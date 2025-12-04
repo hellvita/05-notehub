@@ -37,6 +37,7 @@ export default function App() {
 
   const handleSearch = useDebouncedCallback((value: string) => {
     setSearchQuery(value);
+    setCurrentPage(1);
   }, 1000);
 
   const openModal = () => setIsModalOpen(true);
