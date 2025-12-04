@@ -10,7 +10,7 @@ import {
 import NoteList from "../NoteList/NoteList";
 import css from "./App.module.css";
 import Modal from "../Modal/Modal";
-import type { Note } from "../../types/note";
+import type { NewNote } from "../../types/note";
 import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
@@ -46,7 +46,7 @@ export default function App() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: async (note: Note) => createNote(note),
+    mutationFn: async (note: NewNote) => createNote(note),
     onSuccess: (newNote) => {
       queryClient.invalidateQueries({ queryKey: ["notes", currentPage] });
       toast(`The '${newNote.title}' note has been added!`);
@@ -58,7 +58,7 @@ export default function App() {
         },
       }),
   });
-  const handleAddNote = (note: Note) => {
+  const handleAddNote = (note: NewNote) => {
     createMutation.mutate(note);
   };
 

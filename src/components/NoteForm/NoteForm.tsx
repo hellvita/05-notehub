@@ -2,14 +2,14 @@ import { Formik, Form, Field, type FormikHelpers, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useId } from "react";
 import css from "./NoteForm.module.css";
-import type { Note } from "../../types/note";
+import type { NewNote } from "../../types/note";
 
 interface ModalProps {
   onClose: () => void;
-  onAdd: (note: Note) => void;
+  onAdd: (note: NewNote) => void;
 }
 
-const initialValues: Note = {
+const initialValues: NewNote = {
   title: "",
   content: "",
   tag: "Todo",
@@ -27,7 +27,7 @@ export default function NoteForm({ onClose, onAdd }: ModalProps) {
   const fieldId = useId();
 
   const handleCancel = () => onClose();
-  const handleSubmit = (values: Note, actions: FormikHelpers<Note>) => {
+  const handleSubmit = (values: NewNote, actions: FormikHelpers<NewNote>) => {
     onAdd(values);
     actions.resetForm();
     onClose();
