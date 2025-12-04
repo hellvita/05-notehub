@@ -2,7 +2,12 @@ import { createPortal } from "react-dom";
 import css from "./Modal.module.css";
 import { useEffect } from "react";
 import NoteForm from "../NoteForm/NoteForm";
-import type { ModalProps } from "../../types/note";
+import type { Note } from "../../types/note";
+
+interface ModalProps {
+  onClose: () => void;
+  onAdd: (note: Note) => void;
+}
 
 export default function Modal({ onClose, onAdd }: ModalProps) {
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {

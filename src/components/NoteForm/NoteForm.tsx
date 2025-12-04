@@ -2,7 +2,12 @@ import { Formik, Form, Field, type FormikHelpers, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useId } from "react";
 import css from "./NoteForm.module.css";
-import type { ModalProps, Note } from "../../types/note";
+import type { Note } from "../../types/note";
+
+interface ModalProps {
+  onClose: () => void;
+  onAdd: (note: Note) => void;
+}
 
 const initialValues: Note = {
   title: "",
