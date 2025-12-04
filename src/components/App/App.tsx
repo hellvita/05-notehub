@@ -1,4 +1,4 @@
-import { createNote, deleteNote, fetchNotes } from "../../services/noteService";
+import { deleteNote, fetchNotes } from "../../services/noteService";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import {
@@ -10,7 +10,6 @@ import {
 import NoteList from "../NoteList/NoteList";
 import css from "./App.module.css";
 import Modal from "../Modal/Modal";
-import type { NewNote } from "../../types/note";
 import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
@@ -44,23 +43,6 @@ export default function App() {
   const closeModal = () => setIsModalOpen(false);
 
   const queryClient = useQueryClient();
-
-  const createMutation = useMutation({
-    mutationFn: async (note: NewNote) => createNote(note),
-    onSuccess: (newNote) => {
-      queryClient.invalidateQueries({ queryKey: ["notes", currentPage] });
-      toast(`The '${newNote.title}' note has been added!`);
-    },
-    onError: () =>
-      toast("Could not save changes, please try again...", {
-        style: {
-          borderColor: "#d32f2f",
-        },
-      }),
-  });
-  const handleAddNote = (note: NewNote) => {
-    createMutation.mutate(note);
-  };
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => deleteNote(id),
@@ -107,7 +89,7 @@ export default function App() {
       {data && data.notes.length > 0 && (
         <NoteList notes={data.notes} onDelete={handleDeleteNote} />
       )}
-      {isModalOpen && <Modal onClose={closeModal} onAdd={handleAddNote} />}
+      {isModalOpen && <Modal onClose={closeModal} />}
     </div>
   );
 }
